@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portal de Atalhos — Departamentos</title>
+<title>Portal de Atalhos — FMG</title>
 <style>
   :root {
     --bg: #f1f4f9;
@@ -194,7 +194,7 @@
 <body>
 
 <header>
-  <h1>🏢 Portal de Atalhos</h1>
+  <h1>🏢 Portal de Atalhos — FMG</h1>
   <p>Acesso rápido aos sistemas e pastas de cada departamento</p>
   <div class="busca-wrap">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round">
@@ -243,13 +243,37 @@
 
 const DEPARTAMENTOS = [
   {
-    nome: "Recursos Humanos",
-    icone: "👥",
+    nome: "ADM - Comercial",
+    icone: "📈",
     cor: "#3b6fd4",
     links: [
-      { nome: "Portal do RH", url: "https://exemplo.com/rh" },
-      { nome: "Folha de ponto", url: "https://exemplo.com/ponto" },
-      { nome: "Pasta de documentos do RH", caminho: "\\\\servidor\\RH\\Documentos" },
+      { nome: "Client V3", url: "https://fmgbrasil.dev.br/login" },
+      { nome: "Proposta FMG", url: "https://gerador-de-proposta-chi.vercel.app/login?redirect=%2Fdashboard" },
+    ]
+  },
+  {
+    nome: "Fiscal",
+    icone: "🧾",
+    cor: "#d4762b",
+    links: [
+      { nome: "Faturamento", url: "https://g-faturamento.vercel.app/login" },
+      { nome: "Faturas", url: "https://g-faturas.vercel.app/login" },
+    ]
+  },
+  {
+    nome: "DP",
+    icone: "👥",
+    cor: "#7048c9",
+    links: [
+      { nome: "Folha", url: "https://g-folha.vercel.app/login" },
+    ]
+  },
+  {
+    nome: "Agentes",
+    icone: "🤖",
+    cor: "#0f9bab",
+    links: [
+      { nome: "Ag. Claudio", url: "https://claudio.fmgbrasil.dev.br/painel" },
     ]
   },
   {
@@ -257,38 +281,16 @@ const DEPARTAMENTOS = [
     icone: "💰",
     cor: "#1d9d5f",
     links: [
-      { nome: "Sistema financeiro", url: "https://exemplo.com/financeiro" },
-      { nome: "Emissão de NF-e", url: "https://www.nfe.fazenda.gov.br" },
-      { nome: "Planilhas do setor", caminho: "\\\\servidor\\Financeiro\\Planilhas" },
+      { nome: "Financeiro Geral", url: "https://financeirointegrado.vercel.app/auth" },
+      { nome: "Situação Inadimplentes", url: "https://situacao-fmg.vercel.app/login" },
     ]
   },
   {
-    nome: "TI / Suporte",
-    icone: "🖥️",
-    cor: "#7048c9",
-    links: [
-      { nome: "Abrir chamado", url: "https://exemplo.com/chamados" },
-      { nome: "Base de conhecimento", url: "https://exemplo.com/wiki" },
-      { nome: "Instaladores", caminho: "\\\\servidor\\TI\\Instaladores" },
-    ]
-  },
-  {
-    nome: "Comercial",
-    icone: "📈",
-    cor: "#d4762b",
-    links: [
-      { nome: "CRM", url: "https://exemplo.com/crm" },
-      { nome: "Tabela de preços", caminho: "\\\\servidor\\Comercial\\Precos" },
-      { nome: "Propostas", caminho: "\\\\servidor\\Comercial\\Propostas" },
-    ]
-  },
-  {
-    nome: "Administrativo",
+    nome: "Outros",
     icone: "🗂️",
     cor: "#c23b6b",
     links: [
-      { nome: "Intranet", url: "https://exemplo.com/intranet" },
-      { nome: "Modelos de documentos", caminho: "\\\\servidor\\Adm\\Modelos" },
+      { nome: "Cotações Carb", url: "https://cotacoes-psi.vercel.app/" },
     ]
   },
 ];
