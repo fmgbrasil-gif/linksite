@@ -159,23 +159,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    direction: rtl;      /* mostra o fim do caminho quando cortado */
-    text-align: left;
   }
-  .btn-copiar {
-    flex-shrink: 0;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-soft);
-    border-radius: 8px;
-    padding: 6px 9px;
-    font-size: .75rem;
-    cursor: pointer;
-    transition: background .15s, color .15s;
-  }
-  .btn-copiar:hover { background: rgba(120, 144, 180, .15); color: var(--text); }
-  .btn-copiar.copiado { color: #1d9d5f; border-color: #1d9d5f; }
-
   .sem-resultado {
     grid-column: 1 / -1;
     text-align: center;
@@ -209,7 +193,7 @@
 </main>
 
 <footer>
-  Dica: caminhos locais têm um botão <strong>Copiar</strong> — cole no Explorer de Arquivos (Windows + E → barra de endereço).
+  Portal de Atalhos — FMG
 </footer>
 
 <script>
@@ -223,22 +207,12 @@
      icone: "📁",                      // qualquer emoji
      cor:   "#3b6fd4",                 // cor da faixa do cabeçalho
      links: [
-       // Atalho de SITE (abre em nova aba):
        { nome: "Nome do atalho", url: "https://exemplo.com" },
-
-       // Atalho de CAMINHO LOCAL / REDE (mostra botão Copiar):
-       { nome: "Pasta X", caminho: "\\\\servidor\\pasta\\subpasta" },
-       { nome: "Pasta Y", caminho: "C:\\Users\\Publico\\Documentos" },
+       { nome: "Outro atalho",   url: "https://exemplo.com/sistema" },
      ]
    }
 
-   ATENÇÃO: em caminhos, cada barra invertida "\" deve ser
-   escrita em dobro "\\" (por isso \\\\servidor = \\servidor).
-
-   Sobre caminhos locais: por segurança, navegadores bloqueiam
-   abrir file:// a partir de páginas. O portal tenta abrir mesmo
-   assim (funciona se o arquivo for aberto localmente em alguns
-   navegadores) e sempre oferece o botão "Copiar" como garantia.
+   Todos os atalhos abrem em nova aba.
    ============================================================ */
 
 const DEPARTAMENTOS = [
@@ -300,52 +274,22 @@ const DEPARTAMENTOS = [
 const grade = document.getElementById("grade");
 const semResultado = document.getElementById("semResultado");
 
-function caminhoParaFileUrl(caminho) {
-  // \\servidor\pasta -> file://servidor/pasta | C:\pasta -> file:///C:/pasta
-  const barras = caminho.replace(/\\/g, "/");
-  return barras.startsWith("//") ? "file:" + barras : "file:///" + barras;
-}
-
 function criarLink(link) {
   const li = document.createElement("li");
-  const ehLocal = !!link.caminho;
-  const destino = ehLocal ? link.caminho : link.url;
 
   const a = document.createElement("a");
   a.className = "link-item";
-  a.href = ehLocal ? caminhoParaFileUrl(link.caminho) : link.url;
-  if (!ehLocal) { a.target = "_blank"; a.rel = "noopener"; }
+  a.href = link.url;
+  a.target = "_blank";
+  a.rel = "noopener";
   a.innerHTML =
-    `<span class="tipo">${ehLocal ? "📁" : "🌐"}</span>` +
+    `<span class="tipo">🌐</span>` +
     `<span class="textos"><span class="nome"></span><span class="destino"></span></span>`;
   a.querySelector(".nome").textContent = link.nome;
-  a.querySelector(".destino").textContent = destino;
-  a.dataset.busca = (link.nome + " " + destino).toLowerCase();
+  a.querySelector(".destino").textContent = link.url;
+  a.dataset.busca = (link.nome + " " + link.url).toLowerCase();
   li.appendChild(a);
 
-  if (ehLocal) {
-    const btn = document.createElement("button");
-    btn.className = "btn-copiar";
-    btn.textContent = "Copiar";
-    btn.title = "Copiar caminho: " + link.caminho;
-    btn.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(link.caminho);
-      } catch {
-        // fallback para quando a página é aberta via file:// sem permissão de clipboard
-        const tmp = document.createElement("textarea");
-        tmp.value = link.caminho;
-        document.body.appendChild(tmp);
-        tmp.select();
-        document.execCommand("copy");
-        tmp.remove();
-      }
-      btn.textContent = "Copiado!";
-      btn.classList.add("copiado");
-      setTimeout(() => { btn.textContent = "Copiar"; btn.classList.remove("copiado"); }, 1600);
-    });
-    li.appendChild(btn);
-  }
   return li;
 }
 
