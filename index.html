@@ -411,6 +411,60 @@
   @media (prefers-reduced-motion: reduce) {
     .painel, .painel-fundo, .aba-lateral { transition: none; }
   }
+  .card li.subpasta {
+    display: block;
+    padding: 0 10px;
+  }
+  .subpasta-topo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text);
+    font-family: inherit;
+    font-size: .93rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+  .subpasta-topo:hover { background: rgba(0, 163, 224, .10); }
+  .subpasta-topo:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+  .subpasta-topo .pasta { width: 18px; height: 18px; flex-shrink: 0; }
+  .subpasta-topo .qtd {
+    margin-left: auto;
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--text-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .subpasta-topo .seta-mini {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    stroke: var(--text-soft);
+    transition: transform .2s ease;
+  }
+  .subpasta.fechada .seta-mini { transform: rotate(-90deg); }
+  .card .subpasta > ul {
+    margin: 0 0 8px 17px;
+    padding: 0;
+    border-left: 2px solid var(--border);
+  }
+  .subpasta.fechada > ul { display: none; }
+  .painel-grupo h4 {
+    margin: 8px 6px 2px 23px;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .painel-grupo a.sub { padding-left: 37px; }
+  @media (prefers-reduced-motion: reduce) {
+    .subpasta-topo .seta-mini { transition: none; }
+  }
   .sem-resultado {
     grid-column: 1 / -1;
     text-align: center;
@@ -492,7 +546,7 @@ const DEPARTAMENTOS = [
     cor: "#d4762b",
     links: [
       { nome: "Faturamento", url: "https://g-faturamento.vercel.app/login" },
-      { nome: "Faturas", url: "https://g-faturas.vercel.app/login" },
+      { nome: "Faturas", url: "https://g-faturas.fmgbrasil.dev.br/" },
       { nome: "SIEG Hub", url: "https://auth.sieg.com/login" },
       { nome: "Emitte", url: "https://contabil.emitte.com.br/auth/login" },
       { nome: "Conta Azul", url: "https://mais.contaazul.com/#/login" },
@@ -544,9 +598,22 @@ const DEPARTAMENTOS = [
   {
     nome: "Grupo X",
     cor: "#2f4b8f",
-    links: [
-      { nome: "Yes Mídia In Door", url: "https://yesmidia.yeloo.pro/?redirect=/minhas-telas" },
-      { nome: "Green Istok", url: "https://sp01.retaguarda.app/greenistok1/expirou/c2lzdGVtYQ==" },
+    subpastas: [
+      {
+        nome: "Yes Mídia In Door",
+        links: [
+          { nome: "Yes Mídia In Door", url: "https://yesmidia.yeloo.pro/?redirect=/minhas-telas" },
+          { nome: "Hub Central", url: "https://www.fmgbrasil.dev.br/" },
+          { nome: "Cora", url: "https://app.cora.com.br/dashboard" },
+          { nome: "Faturas", url: "https://g-faturas.fmgbrasil.dev.br/" },
+        ]
+      },
+      {
+        nome: "Green Istok",
+        links: [
+          { nome: "Green Istok", url: "https://sp01.retaguarda.app/greenistok1/expirou/c2lzdGVtYQ==" },
+        ]
+      },
     ]
   },
   {
@@ -575,6 +642,7 @@ const semResultado = document.getElementById("semResultado");
 
 function criarLink(link) {
   const li = document.createElement("li");
+  li.className = "link-li";
 
   const a = document.createElement("a");
   a.className = "link-item";
@@ -589,6 +657,33 @@ function criarLink(link) {
   a.dataset.busca = (link.nome + " " + link.url).toLowerCase();
   li.appendChild(a);
 
+  return li;
+}
+
+function criarSubpasta(sp, cor) {
+  const li = document.createElement("li");
+  li.className = "subpasta fechada";
+  li.dataset.nome = sp.nome.toLowerCase();
+
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "subpasta-topo";
+  botao.setAttribute("aria-expanded", "false");
+  botao.innerHTML =
+    `<svg class="pasta" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>` +
+    `<span class="sp-nome"></span><span class="qtd"></span>` +
+    `<svg class="seta-mini" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+  botao.querySelector(".pasta path").setAttribute("fill", cor);
+  botao.querySelector(".sp-nome").textContent = sp.nome;
+  botao.querySelector(".qtd").textContent = sp.links.length === 1 ? "1 link" : `${sp.links.length} links`;
+  botao.addEventListener("click", () => {
+    const fechada = li.classList.toggle("fechada");
+    botao.setAttribute("aria-expanded", String(!fechada));
+  });
+
+  const sub = document.createElement("ul");
+  sp.links.forEach(link => sub.appendChild(criarLink(link)));
+  li.append(botao, sub);
   return li;
 }
 
@@ -614,7 +709,8 @@ function montar() {
     card.appendChild(cabecalho);
 
     const ul = document.createElement("ul");
-    dep.links.forEach(link => ul.appendChild(criarLink(link)));
+    (dep.links || []).forEach(link => ul.appendChild(criarLink(link)));
+    (dep.subpastas || []).forEach(sp => ul.appendChild(criarSubpasta(sp, dep.cor)));
     card.appendChild(ul);
 
     grade.insertBefore(card, semResultado);
@@ -627,10 +723,20 @@ function filtrar(termo) {
   document.querySelectorAll(".card").forEach(card => {
     const bateDep = card.dataset.nome.includes(termo);
     let linksVisiveis = 0;
-    card.querySelectorAll("li").forEach(li => {
-      const bate = bateDep || li.querySelector(".link-item").dataset.busca.includes(termo);
+    card.querySelectorAll("li.link-li").forEach(li => {
+      const sp = li.closest(".subpasta");
+      const bate = bateDep
+        || (sp && sp.dataset.nome.includes(termo))
+        || li.querySelector(".link-item").dataset.busca.includes(termo);
       li.style.display = bate ? "" : "none";
       if (bate) linksVisiveis++;
+    });
+    card.querySelectorAll(".subpasta").forEach(sp => {
+      const temVisivel = [...sp.querySelectorAll("li.link-li")].some(li => li.style.display !== "none");
+      sp.style.display = temVisivel ? "" : "none";
+      const abrir = termo && temVisivel;
+      sp.classList.toggle("fechada", !abrir);
+      sp.querySelector(".subpasta-topo").setAttribute("aria-expanded", String(!!abrir));
     });
     card.style.display = linksVisiveis ? "" : "none";
     // busca ativa abre as caixas com resultado; busca vazia recolhe tudo
@@ -653,14 +759,22 @@ function montarPainel() {
     titulo.querySelector("i").style.background = dep.cor;
     titulo.querySelector("span").textContent = dep.nome;
     grupo.appendChild(titulo);
-    dep.links.forEach(link => {
+    const addLink = (link, naSubpasta) => {
       const a = document.createElement("a");
       a.href = link.url;
       a.target = "_blank";
       a.rel = "noopener";
       a.textContent = link.nome;
+      if (naSubpasta) a.classList.add("sub");
       grupo.appendChild(a);
       total++;
+    };
+    (dep.links || []).forEach(link => addLink(link, false));
+    (dep.subpastas || []).forEach(sp => {
+      const nome = document.createElement("h4");
+      nome.textContent = sp.nome;
+      grupo.appendChild(nome);
+      sp.links.forEach(link => addLink(link, true));
     });
     lista.appendChild(grupo);
   });

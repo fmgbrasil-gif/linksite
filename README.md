@@ -17,7 +17,6 @@ Abra o `index.html` em um editor de texto (Bloco de Notas, VS Code...) e procure
 ```js
 {
   nome:  "Nome do departamento",
-  icone: "📁",              // qualquer emoji
   cor:   "#3b6fd4",         // cor do cabeçalho da caixa
   links: [
     { nome: "Nome do atalho", url: "https://exemplo.com" },
@@ -26,7 +25,20 @@ Abra o `index.html` em um editor de texto (Bloco de Notas, VS Code...) e procure
 },
 ```
 
-Todos os atalhos abrem em nova aba.
+Para separar os atalhos de uma caixa em subpastas recolhíveis, use `subpastas` no lugar de (ou junto com) `links`:
+
+```js
+{
+  nome: "Grupo X",
+  cor:  "#2f4b8f",
+  subpastas: [
+    { nome: "Empresa A", links: [ { nome: "Sistema", url: "https://exemplo.com" } ] },
+    { nome: "Empresa B", links: [ { nome: "Painel",  url: "https://exemplo.com" } ] },
+  ]
+},
+```
+
+Todos os atalhos abrem em nova aba e aparecem também no painel lateral "Todos os links".
 
 ## Funcionalidades
 
